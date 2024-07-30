@@ -107,6 +107,10 @@ else:
 
 c.JupyterHub.cookie_secret = os.getenv("JUPYTERHUB_CRYPT_KEY")
 
+# To pass tokens to spawned containers, persist auth_state
+c.Authenticator.enable_auth_state = True
+
+
 # Allowed admins
 admin = os.environ.get("JUPYTERHUB_ADMIN")
 if admin:
