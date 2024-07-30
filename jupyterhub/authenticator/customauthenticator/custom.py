@@ -144,9 +144,8 @@ class CustomTokenAuthenticator(Authenticator):
                 log_message=f"Required field {self.auth_username_key} does not exist in jwt token",
             )
         username = resp_json[self.auth_username_key]
-
         self.log.info(f"username={username}")
-        return {"name": username}
+        return {"name": username, "auth_state": {"CLOWDER_API_KEY": access_token}}
 
     async def authenticate(self, handler, data):
         self.log.info("Authenticate")
@@ -169,6 +168,14 @@ class CustomTokenAuthenticator(Authenticator):
                     + ". Please login to access Clowder."
                 )
             handler.redirect(f"{self.landing_page_login_url}?error={error_msg}")
+
+    async def pre_spawn_start(self, user, spawner):
+        """Pass CLOWDER API Key to spawner via environment variable"""
+        auth_state = await user.get_auth_state()
+        if not auth_state:
+            # auth_state not enabled
+            return
+        spawner.environment["CLOWDER_API_KEY"] = auth_state
 
     # async def pre_spawn_start(self, user, spawner):
     #     auth_state = await user.get_auth_state()

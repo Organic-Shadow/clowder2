@@ -107,11 +107,6 @@ else:
 
 c.JupyterHub.cookie_secret = os.getenv("JUPYTERHUB_CRYPT_KEY")
 
-# Pass user cookie as environment variable to spawned containers
-c.DockerSpawner.environment = {
-    "JUPYTERHUB_USER3": "{username}",
-}
-
 # Allowed admins
 admin = os.environ.get("JUPYTERHUB_ADMIN")
 if admin:
